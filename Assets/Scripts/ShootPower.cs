@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShootPower : MonoBehaviour
 {
     // TO DO:
-    // add a timer
     // particle effects
 
     // When the player presses the mouse button down, calculate the difference between
@@ -33,13 +33,26 @@ public class ShootPower : MonoBehaviour
     public bool isGameActive;
 
     public Text gameOverText;
+    public TextMeshProUGUI currentPlayerName;
+    public TextMeshProUGUI highScoreText;
     public Button restartButton;
+
+    public GameObject gameOverScreen;
 
     // Start is called before the first frame update
     void Start()
     {
         ballRb = gameObject.GetComponent<Rigidbody>();
         trajectoryLine = GetComponent<TrajectoryLine>();
+
+        if (MainManager.Instance != null)
+        {
+            currentPlayerName.text = MainManager.Instance.playerName;
+        }
+        else
+        {
+            currentPlayerName.text = "Anonymous";
+        }
 
         counter = GameObject.Find("Box").GetComponent<Counter>();
 
@@ -117,9 +130,25 @@ public class ShootPower : MonoBehaviour
     // Stop game, bring up game over text and restart button
     public void GameOver()
     {
-        gameOverText.gameObject.SetActive(true);
-        restartButton.gameObject.SetActive(true);
+        //currentPlayerName.text = currentPlayerName.text + "'s score: " + counter.Count;
+
+        gameOverScreen.gameObject.SetActive(true);
         isGameActive = false;
+
+        if (MainManager.Instance != null)
+        {
+            if (counter.Count > MainManager.Instance.highScore)
+            {
+                MainManager.Instance.highScoreName = currentPlayerName.text;
+                MainManager.Instance.highScore = counter.Count;
+
+                MainManager.Instance.SaveScore();
+            }
+
+            highScoreText.text = "High Score\n"
+                        + MainManager.Instance.highScoreName + ": "
+                        + MainManager.Instance.highScore;
+        }
     }
 
     public void RestartGame()

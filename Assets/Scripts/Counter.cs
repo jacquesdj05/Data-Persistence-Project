@@ -10,7 +10,7 @@ public class Counter : MonoBehaviour
     public Text timerText;
     public bool hasScored;
 
-    private int Count = 0;
+    public int Count = 0;
 
     private float timerTime = 15f;
 
